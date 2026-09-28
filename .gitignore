@@ -1,0 +1,12 @@
+# platform-tools: downloaded at runtime, never versioned
+/platform-tools/
+/platform-tools*.zip
+
+# Locally generated ZIPs
+ADB-and-FastbootPlusPlus-Portable*.zip
+
+# Temporary files
+/temp/
+*.tmp
+Thumbs.db
+desktop.ini

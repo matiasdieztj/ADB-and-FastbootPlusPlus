@@ -1,141 +1,178 @@
-<p align="center"><img src="https://github.com/K3V1991/ADB-and-FastbootPlusPlus/blob/main/ADB-and-FastbootPlusPlus.png" width="200"></a>
-<h1 align="center"><b>ADB & Fastboot++</b></h1>
-<h4 align="center">A small Application for Windows that allows you to install the latest Version of ADB and Fastboot Files on the Computer without installing the entire Android SDK Package + Toolkit & Commands</h4>
-<br />
+<p align="center">
+  <img src="https://github.com/K3V1991/ADB-and-FastbootPlusPlus/blob/main/ADB-and-FastbootPlusPlus.png" width="200" alt="ADB & Fastboot++">
+</p>
+
+<h1 align="center"><b>ADB &amp; Fastboot++</b></h1>
+
+<h4 align="center">
+A small Windows application that gives you <b>ADB</b> and <b>Fastboot</b>
+without installing the full Android SDK. It ships a batch toolkit with menus
+for debloating, installing APKs / kernels / recoveries, taking screenshots,
+recording the screen, and inspecting versions, IMEI, IPs, and more.
+</h4>
 
 <p align="center">
 <a href="https://forum.xda-developers.com/t/tool-windows-adb-fastboot-february-2023.3944288/" alt="XDA-Developers"><img src="https://img.shields.io/badge/XDA--Developers-%23AC6E2F.svg?style=for-the-badge&logo=XDA-Developers&logoColor=white" /></a>
-<img src="https://img.shields.io/github/v/release/K3V1991/ADB-and-FastbootPlusPlus?color=blueviolet&style=for-the-badge" /></a>
-<a href="https://liberapay.com/K3V1991" alt="LiberaPay"><img src="https://img.shields.io/badge/Liberapay-F6C915?style=for-the-badge&logo=liberapay&logoColor=black" /></a>
-<img src="https://img.shields.io/github/downloads/K3V1991/ADB-and-FastbootPlusPlus/total?color=sucess&style=for-the-badge" /></a>
-<a href="https://www.buymeacoffee.com/k3v1991" alt="BuyMeACoffee"><img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" /></a>
-<a href="https://ko-fi.com/k3v1991" alt="Ko-fi"><img src="https://img.shields.io/badge/Ko--fi-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" /></a>
-<a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HW8B98TVDLKWA" alt="PayPal"><img src="https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white" /></a>
-<a href="https://github.com/K3V1991/Donate-Crypto/blob/main/README.md" alt="Crypto"><img src="https://img.shields.io/badge/Bitcoin-000?style=for-the-badge&logo=bitcoin&logoColor=white" /></a>
+  <a href="https://github.com/matiasdieztj/ADB-and-FastbootPlusPlus/releases">
+    <img src="https://img.shields.io/github/v/release/matiasdieztj/ADB-and-FastbootPlusPlus?color=blueviolet&style=for-the-badge" alt="Release">
+  </a>
+  <a href="https://github.com/matiasdieztj/ADB-and-FastbootPlusPlus/releases">
+    <img src="https://img.shields.io/github/downloads/matiasdieztj/ADB-and-FastbootPlusPlus/total?color=success&style=for-the-badge" alt="Downloads">
+  </a>
 </p>
+
 <hr />
-<br />
 
-## NFO:
-* Versions: Installer & Portable
-* Android Debug Bridge & Fastboot updated to latest v1.0.41 (Version 35.0.1-11580240, March 2024)
+## What changed in this fork
 
-## Requirements:
-* Windows OS
-* USB Driver for your Device or Universal ADB Driver (Included in the Installer)
-* PowerShell for the Toolkit
+- **The repository no longer ships `platform-tools`.** The latest official
+  Google build is downloaded automatically on first use, or bundled at release
+  time via **GitHub Actions**.
+- The `Release` workflow triggers when you publish a GitHub Release, downloads
+  `platform-tools-latest-windows.zip`, reads the real version (`Pkg.Revision`)
+  from `source.properties`, updates this README, and builds the portable ZIP
+  with `platform-tools/` at its root.
+- `Toolkit - Portable.bat` looks for `adb.exe` and `fastboot.exe` inside
+  `.\platform-tools\` (Google's official layout).
 
-## Features:
-* Installation Folder chooseable (Installer)
-* Desktop & Start Menu Shortcuts (Installer)
-* Toolkit
-* View Commands, How-To enable Developer Options & USB Debugging
-* Add to System Path Environment (Installer)
-* Optional Universal ADB Driver Installation (Installer)
+<!-- PT_VERSION -->
+**Bundled platform-tools:** _(auto-filled when a release is published)_
+<!-- /PT_VERSION -->
 
-## Toolkit Features:
-* Uninstall Bloatware without Root Access (They are just being uninstalled for the current User)
-* Re-install uninstalled Apps
-* Install Kernel (Reboots automatically to Bootloader, Popup Menu)
-* Install Recovery (Reboots automatically to Bootloader, Popup Menu)
-* Install APKs (Popup Menu)
-* Install APK Bundles/Split APKs (Installer: Desktop/ABI Folder, Portable: ABI Folder)
-* Push Files (Popup Menu)
-* Check Firmware Version
-* Check Android Version
-* Check Kernel Version 
-* Check Firmware Build Date
-* Check Kernel Build Date
-* Check Security Patch Date
-* Check IMEI           
-* Check IP Adresses
-* Check App Packages   
-* Check Process Activity (Real Time)
-* Take Screenshots (PNG Format)
-* Video recoding - 30, 60, 120 & 180 Seconds (Without Device Sound)
-* Reboot the Device
-* Reboot to Bootloader
-* Exit Bootloader to System
-* Reboot to Recovery
-* Create Bugreport (Saves on Desktop)
-* Create Logcat (Saves on Desktop)
-* Exit (adb kill-server & close Toolkit)
-<br />
+## Portable ZIP layout
 
-## Installer:
-1. Download ADB-and-Fastboot++_vXXX.msi
-2. Follow the Installers Instructions and select where you would like to install ADB & Fastboot++
-3. After the Installation Wizard has completed you can select to start ADB & Fastboot++
-4. You should see a Command Window open, now you can use ADB and Fastboot Commands
+```
 
-## Portable:
-1. Download ADB-and-Fastboot++_vXXX-Portable.zip
-2. Extract the Zip Archive
-3. Double click on Open CMD.bat
-4. You should see a Command Window open, now you can use ADB and Fastboot Commands
-<br />
-<br />
+ADB-and-FastbootPlusPlus-Portable-<tag>.zip
+├── OpenCMD.bat
+├── Toolkit - Portable.bat
+├── _bootstrap.bat
+├── Commands.txt
+├── DevAndUSB.txt
+├── README.md
+└── platform-tools/
+├── adb.exe
+├── AdbWinApi.dll
+├── AdbWinUsbApi.dll
+├── fastboot.exe
+└── source.properties
 
-## Enable Developer Options & USB Debugging:
-<details>
-  <summary>Click to expand</summary>
-  
-1. Install the USB Driver for your Device or Universal Adb Driver
-2. On your Device, go to Settings > About. Find the Build Number and tap on it 7 times to enable Developer Options
-3. Now enter System > Developer Options and find "USB debugging" and enable it
-4. Plug your Device into the Computer and change it from "Charge only" to "File Transfer" Mode
-5. On your Computer, browse to the Directory where you extracted the Portable Version or use Tiny ADB & Fastboot++ Shortcut
-6. Launch a Command Prompt with Open CMD.bat or use Tiny ADB & Fastboot++ Shortcut
-7. Once you’re in the Command Prompt, enter the following Command:
+```
+
+## Usage — official release (recommended)
+
+1. Open the [**Releases**](https://github.com/matiasdieztj/ADB-and-FastbootPlusPlus/releases)
+   tab and download the latest `ADB-and-FastbootPlusPlus-Portable-*.zip`.
+2. Extract the ZIP anywhere (e.g. `C:\ADB`).
+3. Double-click **`OpenCMD.bat`**.
+4. Done: a console opens with `adb` and `fastboot` already on the `PATH`.
+
+The ZIP already contains `platform-tools/`, so `_bootstrap.bat` does nothing.
+
+## Usage — cloning the repo (development)
+
+1. Clone the repo:
+   ```powershell
+   git clone https://github.com/matiasdieztj/ADB-and-FastbootPlusPlus.git
+   cd ADB-and-FastbootPlusPlus
+```
+
+2. Double-click **`OpenCMD.bat`**.
+3. Because `platform-tools/` is not tracked, `_bootstrap.bat` will ask you to
+download the official ZIP from:
+
+```
+https://dl.google.com/android/repository/platform-tools-latest-windows.zip
+```
+
+Save it into the repo folder and press any key.
+4. `_bootstrap.bat` extracts **only** `adb.exe`, `fastboot.exe`,
+`AdbWinApi.dll`, `AdbWinUsbApi.dll` and `source.properties` into
+`platform-tools\`, deletes everything else, and removes the original ZIP.
+5. In the same run, it patches `Toolkit - Portable.bat` so it uses
+`%~dp0platform-tools` instead of the legacy `ADB and Fastboot++ v1.1.1 Portable`.
+
+`platform-tools/` is in `.gitignore`, so it won't be committed by accident.
+
+## Toolkit — main features
+
+- Debloat without root (uninstalls for the current user only).
+- Reinstall uninstalled apps.
+- Install kernels / recoveries (auto-reboots to bootloader + popup chooser).
+- Install APKs and split APK bundles.
+- Push files to the device.
+- Check firmware, Android, kernel, and security patch versions.
+- Check IMEI, IPs, installed packages, and live processes.
+- Screenshots (PNG) and screen recording (30 / 60 / 120 / 180 s).
+- Reboot / Reboot to bootloader / Reboot to recovery / Boot kernel.
+- Bugreport and Logcat saved to the Desktop.
+
+## Requirements
+
+- Windows 10/11.
+- OEM USB driver or the **Universal ADB Driver**.
+- PowerShell (bundled with Windows).
+
+## Enable Developer Options & USB Debugging
+
+1. Install the USB driver for your phone or the **Universal ADB Driver**.
+2. On the phone: **Settings → About phone**, tap *Build number* 7 times to
+enable *Developer Options*.
+3. **System → Developer Options → USB debugging** → enable.
+4. Plug the phone into the PC and switch the USB mode from *Charging only* to
+*File transfer*.
+5. Open **`OpenCMD.bat`** and run:
+
 ```
 adb devices
 ```
-8. System is starting the ADB Daemon (If this is your first Time running ADB, you will see a Prompt on your Phone asking you to authorize a Connection with the Computer. Click OK.)
-9. Succesful enabled USB Debugging
-</details>
+6. A dialog will appear on the phone asking to authorize the PC. Accept it.
+7. Done.
 
-## Unable to connect to ADB:
-<details>
-  <summary>Click to expand</summary>
-  
-1. AMD Bug - [XDA Thread](https://forum.xda-developers.com/t/fix-fastboot-issues-on-ryzen-based-pcs.4186321/)
-2. Switch Device from "Charging" to "File Transfer" Mode
-3. Install the latest Device Driver or Universal USB Driver
-4. Try another USB Cable
-5. Use another USB Port (USB 3.0 Port to USB 2.0)
-6. Try to execute Fastboot Command without connecting your Device, and once it says "waiting for device" plug in your USB Cable
-7. Windows: Click "Change advanced power setting" on your chosen Plan and expand "USB Settings". Under "USB Settings" Section, expand "USB selective suspend setting" and change it to "Disabled" for On Battery and Plugged In
-8. Try another PC
-</details>
-<br />
+## Unable to connect to ADB
 
-## Screenshots:
-<img src="https://github.com/K3V1991/ADB-and-FastbootPlusPlus/blob/main/Screenshots/Information.png"></a>
-<br />
-<br />
+- [AMD/Ryzen bug (XDA)](https://forum.xda-developers.com/t/fix-fastboot-issues-on-ryzen-based-pcs.4186321/)
+- Switch the device from *Charging* to *File transfer* mode.
+- Install the latest device driver or the Universal USB Driver.
+- Try a different USB cable.
+- Try a different port (USB 3.0 → USB 2.0).
+- Run a `fastboot ...` command without the phone connected, and plug it in
+only once it says `waiting for device`.
+- Windows: **Power Options → Advanced settings → USB → USB selective suspend**
+→ set to **Disabled** for both *On battery* and *Plugged in*.
+- Try another PC.
 
-<img src="https://github.com/K3V1991/ADB-and-FastbootPlusPlus/blob/main/Screenshots/License.png"></a>
-<br />
-<br />
+## CI/CD
 
-<img src="https://github.com/K3V1991/ADB-and-FastbootPlusPlus/blob/main/Screenshots/Tasks.png"></a>
-<br />
-<br />
+Workflow: [`.github/workflows/release.yml`](https://.github/workflows/release.yml)
 
-<img src="https://github.com/K3V1991/ADB-and-FastbootPlusPlus/blob/main/Screenshots/Completing.png"></a>
-<br />
-<br />
+Triggers:
 
-<img src="https://github.com/K3V1991/ADB-and-FastbootPlusPlus/blob/main/Screenshots/Shortcuts.png"></a>
-<br />
-<br />
+- `release: types: [published]` → when you publish a GitHub Release.
+- `workflow_dispatch` → manual run for testing without publishing.
 
-<img src="https://github.com/K3V1991/ADB-and-FastbootPlusPlus/blob/main/Screenshots/ADB-and-Fastboot%2B%2B.png"></a>
-<br />
-<br />
+Steps:
 
-<img src="https://github.com/K3V1991/ADB-and-FastbootPlusPlus/blob/main/Screenshots/Toolkit-Main.png"></a>
-<br />
-<br />
+1. Downloads `platform-tools-latest-windows.zip` from Google.
+2. Extracts it and reads `Pkg.Revision` from `source.properties`.
+3. Patches `Toolkit - Portable.bat` if it still points to the legacy folder.
+4. Updates the `<!-- PT_VERSION -->` block in this README.
+5. Composes the ZIP with `OpenCMD.bat`, `Toolkit - Portable.bat`,
+`_bootstrap.bat`, `Commands.txt`, `DevAndUSB.txt`, `README.md`, and
+`platform-tools/`.
+6. Uploads it as a release asset
+(`ADB-and-FastbootPlusPlus-Portable-<tag>.zip`) or as a workflow artifact
+when the run was manual.
 
-<img src="https://github.com/K3V1991/ADB-and-FastbootPlusPlus/blob/main/Screenshots/Toolkit-Menu.png"></a>
+## Versioning
+
+The fork keeps the `v2.x.y` scheme. The `platform-tools` version is dictated
+by Google: whichever is latest at release time. The `<!-- PT_VERSION -->`
+block in this README is updated automatically to reflect what was bundled.
+
+## Credits
+
+- Original project: [K3V1991/ADB-and-FastbootPlusPlus](https://github.com/K3V1991/ADB-and-FastbootPlusPlus)
+- platform-tools: [Google — Android SDK Platform-Tools](https://developer.android.com/tools/releases/platform-tools)
+- Fork maintained by [matiasdieztj](https://github.com/matiasdieztj)
+

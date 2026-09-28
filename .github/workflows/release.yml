@@ -1,0 +1,161 @@
+name: Release
+
+on:
+  # Triggered when a GitHub Release is published.
+  release:
+    types: [published]
+
+  # Allows running it manually to test the build without publishing.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-portable:
+    name: Build portable ZIP with latest platform-tools
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      # ---------------------------------------------------------------------
+      # 1) Download the latest platform-tools directly from Google
+      # ---------------------------------------------------------------------
+      - name: Download latest platform-tools (Windows)
+        shell: pwsh
+        run: |
+          $url = 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip'
+          Write-Host "Downloading $url"
+          Invoke-WebRequest -Uri $url -OutFile 'platform-tools.zip' -UseBasicParsing
+
+      - name: Extract platform-tools
+        shell: pwsh
+        run: |
+          Expand-Archive -Path 'platform-tools.zip' -DestinationPath '.' -Force
+          Remove-Item 'platform-tools.zip' -Force
+
+          if (-not (Test-Path 'platform-tools/adb.exe')) {
+            throw 'platform-tools/adb.exe not found after extraction'
+          }
+          Get-ChildItem 'platform-tools' | Select-Object Name, Length | Format-Table
+
+      # ---------------------------------------------------------------------
+      # 2) Read the real platform-tools version from source.properties
+      # ---------------------------------------------------------------------
+      - name: Read platform-tools version
+        id: pt
+        shell: pwsh
+        run: |
+          $props = Get-Content 'platform-tools/source.properties' -Raw
+          $m = [regex]::Match($props, 'Pkg\.Revision=([\d\.]+)')
+          if (-not $m.Success) { throw 'Could not parse Pkg.Revision from source.properties' }
+          $v = $m.Groups[1].Value
+          Write-Host "platform-tools Pkg.Revision = $v"
+          "version=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      # ---------------------------------------------------------------------
+      # 3) Patch "Toolkit - Portable.bat" to point at platform-tools
+      # ---------------------------------------------------------------------
+      - name: Patch "Toolkit - Portable.bat"
+        shell: pwsh
+        run: |
+          $f = 'Toolkit - Portable.bat'
+          $old = 'set "path=%path%;%~dp0ADB and Fastboot++ v1.1.1 Portable"'
+          $new = "call `"%~dp0_bootstrap.bat`"`r`n" +
+                 "if errorlevel 1 exit /B 1`r`n" +
+                 "set `"path=%path%;%~dp0platform-tools`""
+
+          $c = Get-Content -LiteralPath $f -Raw -Encoding UTF8
+          if ($c.Contains($old)) {
+            $c = $c.Replace($old, $new)
+            [System.IO.File]::WriteAllText(
+              (Resolve-Path $f),
+              $c,
+              [System.Text.UTF8Encoding]::new($false)
+            )
+            Write-Host 'Toolkit - Portable.bat patched.'
+          } else {
+            Write-Warning 'Pattern not found. The toolkit is either already patched or the file changed.'
+          }
+
+      # ---------------------------------------------------------------------
+      # 4) Update the README with the bundled platform-tools version
+      # ---------------------------------------------------------------------
+      - name: Update README with platform-tools version
+        shell: pwsh
+        env:
+          PT_VERSION: ${{ steps.pt.outputs.version }}
+        run: |
+          $v = $env:PT_VERSION
+          $f = 'README.md'
+          $c = Get-Content -LiteralPath $f -Raw -Encoding UTF8
+
+          $block = "<!-- PT_VERSION -->" +
+                   "**Bundled platform-tools:** ``v$v`` (official Google build)" +
+                   "<!-- /PT_VERSION -->"
+
+          $pattern = '(?s)<!-- PT_VERSION -->.*?<!-- /PT_VERSION -->'
+          if ([regex]::IsMatch($c, $pattern)) {
+            $c = [regex]::Replace($c, $pattern, $block)
+          } else {
+            $c = $c.TrimEnd() + "`r`n`r`n" + $block + "`r`n"
+          }
+
+          [System.IO.File]::WriteAllText(
+            (Resolve-Path $f),
+            $c,
+            [System.Text.UTF8Encoding]::new($false)
+          )
+          Write-Host "README updated with platform-tools v$v"
+
+      # ---------------------------------------------------------------------
+      # 5) Build the final ZIP
+      # ---------------------------------------------------------------------
+      - name: Build release ZIP
+        id: pack
+        shell: pwsh
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          $tag = if ([string]::IsNullOrWhiteSpace($env:TAG)) { 'dev' } else { $env:TAG }
+
+          $items = @(
+            'OpenCMD.bat',
+            'Toolkit - Portable.bat',
+            '_bootstrap.bat',
+            'Commands.txt',
+            'DevAndUSB.txt',
+            'README.md'
+          ) | Where-Object { Test-Path $_ }
+
+          $items += 'platform-tools'
+
+          $zip = "ADB-and-FastbootPlusPlus-Portable-$tag.zip"
+          if (Test-Path $zip) { Remove-Item $zip -Force }
+
+          Compress-Archive -Path $items -DestinationPath $zip -Force
+          Get-Item $zip | Format-List Name, Length
+
+          "zip=$zip" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      # ---------------------------------------------------------------------
+      # 6) Publish to the Release (or upload as artifact if manual)
+      # ---------------------------------------------------------------------
+      - name: Upload ZIP to GitHub Release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.pack.outputs.zip }}
+          fail_on_unmatched_files: true
+
+      - name: Upload ZIP as workflow artifact
+        if: github.event_name != 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ADB-and-FastbootPlusPlus-Portable
+          path: ${{ steps.pack.outputs.zip }}
+          if-no-files-found: error
